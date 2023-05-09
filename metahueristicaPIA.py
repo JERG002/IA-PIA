@@ -42,8 +42,8 @@ def Listado_Tareas(Tareas, solucion):
             for dep in Tareas[f"T.{i+1}"]["Necesita"]:
                 if not solucion[int(dep[2:]) - 1]:
                     return -1  # invalid solucion due to unsatisfied dependencies
-    if tiempo > 10:
-        return -1  # invalid solucion due to exceeding tiempo limit
+        if valor >= 70:
+            return valor # invalid solucion due to exceeding tiempo limit
     return valor
 
 # define the knapsack neighbor function
