@@ -23,6 +23,8 @@ def busqueda_profundidad(tareas, tarea_act, tiempo_rest, tareas_Seleccionadas, v
         return (tareas_Seleccionadas, valor_total)
     if tiempo_rest < 0:
         return (tareas_Seleccionadas, valor_total)
+    if valor_total >= 70:
+        return (tareas_Seleccionadas, valor_total)
     if tarea_act not in tareas:
         return (tareas_Seleccionadas, valor_total)
     homework = tareas[tarea_act]
@@ -39,7 +41,7 @@ def busqueda_profundidad(tareas, tarea_act, tiempo_rest, tareas_Seleccionadas, v
     return resultado
 
 def solucion_problema_educativo(tareas):
-    tiempo_total = 10
+    tiempo_total = 100
     resultado = busqueda_profundidad(tareas, list(tareas.keys())[0], tiempo_total, [], 0)
     tareas_Seleccionadas = resultado[0]
     valor_total = resultado[1]
