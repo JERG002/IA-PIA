@@ -32,7 +32,7 @@ def Recocido(Sol_inicial, valor_f, vecino_f, temperatura):
     return sol_actual
 
 # define the knapsack value function
-def Listado_Tareas(Tareas, solucion):
+def Listado_Tareas(Tareas, solucion, cal_min):
     valor = 0
     tiempo = 0
     for i, Ta in enumerate(solucion):
@@ -42,7 +42,7 @@ def Listado_Tareas(Tareas, solucion):
             for dep in Tareas[f"T.{i+1}"]["Necesita"]:
                 if not solucion[int(dep[2:]) - 1]:
                     return -1  # invalid solucion due to unsatisfied dependencies
-        if valor >= 70:
+        if valor >= cal_min:
             return valor # invalid solucion due to exceeding tiempo limit
     return valor
 
@@ -54,11 +54,11 @@ def Vecinos_Tareas(solucion):
     return nueva_sol
 
 # generate the initial solucion
-def Gen_sol_inicial(num_Tareas):
+def Gen_sol_inicial(num_Tareas, cal_min):
     solucion = []
     while True:
         solucion = [random.choice([True, False]) for _ in range(num_Tareas)]
-        if sum([Ta["Valor"] for Ta in Tareas.values() if solucion[int(Ta["Nombre"][2:]) - 1]]) >= 70:
+        if sum([Ta["Valor"] for Ta in Tareas.values() if solucion[int(Ta["Nombre"][2:]) - 1]]) >= cal_min:
             return solucion
 
 # generate the Tareas
@@ -84,22 +84,22 @@ def Generar_Tareas(num_Tareas):
 
 # generate the Tareas
 Tareas = Generar_Tareas(5)
-
+calificacion_minima = 70
 # run the simulated annealing algorithm
-solucion = Gen_sol_inicial(5)
+solucion = Gen_sol_inicial(5, calificacion_minima)
 temperatura = temperatura(1000, 0.95)
 mejor_solucion = Recocido(
     Sol_inicial=solucion,
-    valor_f=lambda s: Listado_Tareas(Tareas, s),
+    valor_f=lambda s: Listado_Tareas(Tareas, s, calificacion_minima),
     vecino_f=Vecinos_Tareas,
     temperatura=temperatura
 )
 
 print(Tareas)
 
-if Listado_Tareas(Tareas, mejor_solucion) == -1 or Listado_Tareas(Tareas, mejor_solucion) < 70 :
+if Listado_Tareas(Tareas, mejor_solucion, calificacion_minima) == -1 or Listado_Tareas(Tareas, mejor_solucion, calificacion_minima) < calificacion_minima :
     print("No hay solucion valida con la relacion tiempo-valor")
 else:
     print("Mejor solucion encontrada:")
     print(mejor_solucion)
-    print("Calificacion:", Listado_Tareas(Tareas, mejor_solucion))
+    print("Calificacion:", Listado_Tareas(Tareas, mejor_solucion, calificacion_minima))
